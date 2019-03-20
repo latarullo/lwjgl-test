@@ -2,6 +2,7 @@ package utils;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -9,15 +10,18 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.PixelFormat;
 
+import main.AnimationApp;
+
 public class DisplayManager {
 
 	private static final String TITLE = "ThinMatrix Animation Tutorial";
-	private static final int WIDTH = 1280;
-	private static final int HEIGHT = 720;
+	private static final int WIDTH = 500;
+	private static final int HEIGHT = 500;
 	private static final int FPS_CAP = 100;
 
 	private static long lastFrameTime;
 	private static float delta;
+	private static float acumulatedDelta;
 
 	public static void createDisplay() {
 		try {
@@ -42,6 +46,13 @@ public class DisplayManager {
 		long currentFrameTime = getCurrentTime();
 		delta = (currentFrameTime - lastFrameTime) / 1000f;
 		lastFrameTime = currentFrameTime;
+		 
+		acumulatedDelta = acumulatedDelta + delta;
+		if (acumulatedDelta > 5) {
+			System.out.println("CRIA CARINHA...");
+			AnimationApp.scene.criaCarinha(0,0);
+			acumulatedDelta = 0;
+		}
 	}
 
 	public static float getFrameTime() {

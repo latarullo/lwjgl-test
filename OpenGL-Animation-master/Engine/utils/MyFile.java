@@ -65,7 +65,7 @@ public class MyFile {
 		} catch (Exception e) {
 			try {
 				return new FileInputStream(
-						"C:\\Users\\f537268\\Downloads\\OpenGL-Animation-master\\Resources\\res\\model.dae");
+						"C:\\Users\\f537268\\git\\lwjgl-test\\OpenGL-Animation-master\\res\\model.dae");
 			} catch (Exception x) {
 			}
 		}
@@ -79,7 +79,7 @@ public class MyFile {
 			return reader;
 		} catch (Exception e) {
 			
-			return new BufferedReader(new FileReader(new File("C:\\Users\\f537268\\Downloads\\OpenGL-Animation-master\\Resources\\res\\model.dae")));
+			return new BufferedReader(new FileReader(new File("C:\\Users\\f537268\\git\\lwjgl-test\\OpenGL-Animation-master\\res\\model.dae")));
 //			System.err.println("Couldn't get reader for " + path);
 //			throw e;
 		}

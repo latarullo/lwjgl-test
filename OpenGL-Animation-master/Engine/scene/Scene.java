@@ -1,6 +1,7 @@
 package scene;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
@@ -9,11 +10,19 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
+import com.sun.javafx.runtime.async.AsyncOperationListener;
+
 import animatedModel.AnimatedModel;
+import animation.Animation;
 import animation.Quaternion;
+import loaders.AnimatedModelLoader;
+import loaders.AnimationLoader;
 import main.AnimationApp;
+import main.Camera;
+import main.GeneralSettings;
 import openglObjects.Vao;
 import skybox.CubeGenerator;
+import utils.MyFile;
 
 /**
  * Represents all the stuff in the scene (just the camera, light, and model
@@ -23,13 +32,16 @@ import skybox.CubeGenerator;
  *
  */
 public class Scene {
+	public static boolean isMousePressed = false;
 	public static boolean show = true;
 
 	private final ICamera camera;
 
-	private final AnimatedModel[] animatedModels;
+	private AnimatedModel[] animatedModels;
 
 	private Vector3f lightDirection = new Vector3f(0, -1, 0);
+	private float z = 0;
+	private float zStep = 0.1f;
 
 	public Scene(AnimatedModel[] model, ICamera cam) {
 		this.animatedModels = model;
@@ -81,6 +93,15 @@ public class Scene {
 			List<AnimatedModel> entities = AnimationApp.getEntities();
 			entities.get(1).setSelected(!entities.get(1).isSelected());
 		}
+		
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_0)) {
+			List<AnimatedModel> entities = AnimationApp.getEntities();
+			for (AnimatedModel animatedModel : entities) {
+				animatedModel.setSelected(!animatedModel.isSelected());
+			}
+		}
+		
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
 			List<AnimatedModel> entities = AnimationApp.getEntities();
@@ -157,8 +178,13 @@ public class Scene {
 			}
 		}
 
-		// System.out.println("X: " + Mouse.getX() + " Y: " + Mouse.getY() + " is
-		// drawing: " + this.startDrawing);
+		if (Mouse.isButtonDown(0)) {
+			int mouseX = Mouse.getX();
+			int mouseY = Mouse.getY();
+			System.out.println("X: " +  mouseX + " Y: " + mouseY);
+			
+			criaCarinha(mouseX, mouseY);
+		}
 
 //		while (Mouse.next()){
 //		    if (Mouse.getEventButtonState()) {
@@ -179,6 +205,31 @@ public class Scene {
 //		        }
 //		    }
 //		}
+	}
+
+	public void criaCarinha(int mouseX, int mouseY) {
+		AnimatedModel entity = AnimatedModelLoader.loadEntity(new MyFile("C:\\Users\\f537268\\git\\lwjgl-test\\OpenGL-Animation-master\\res\\", GeneralSettings.MODEL_FILE),
+				new MyFile("C:\\Users\\f537268\\git\\lwjgl-test\\OpenGL-Animation-master\\res\\", GeneralSettings.DIFFUSE_FILE));
+		Animation animation = AnimationLoader.loadAnimation(new MyFile("C:\\Users\\f537268\\git\\lwjgl-test\\OpenGL-Animation-master\\res\\", GeneralSettings.ANIM_FILE));
+		entity.doAnimation(animation);
+		
+		AnimationApp.addEntity(entity);
+		z = z - zStep;
+
+		entity.setPosition(new Vector3f(mouseX/100f, 0, z));
+		
+		entity.setIsMoving(true);
+		
+		AnimatedModel[] allEntities = new AnimatedModel[animatedModels.length+1];
+		
+		int i = 0;
+		for (AnimatedModel animatedModel : animatedModels) {
+			allEntities[i++] = animatedModel;
+		}
+		allEntities[i] = entity;
+		
+		this.animatedModels = allEntities;
+		
 	}
 
 	public void updateModels() {

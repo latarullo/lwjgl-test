@@ -11,6 +11,7 @@ import scene.Scene;
 
 public class AnimationApp {
 	static List<AnimatedModel> entities = new ArrayList<>();
+	public static Scene scene;
 
 	/**
 	 * Initialises the engine and loads the scene. For every frame it updates the
@@ -22,7 +23,7 @@ public class AnimationApp {
 	 */
 	public static void main(String[] args) {
 		RenderEngine engine = RenderEngine.init();
-		Scene scene = SceneLoader.loadScene(GeneralSettings.RES_FOLDER);
+		 scene = SceneLoader.loadScene(GeneralSettings.RES_FOLDER);
 
 		while (!Display.isCloseRequested()) {
 			scene.getKeyboardInputs();
